@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Solutions Inc.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .service-card h3 {
+            color: #3498db;
+            margin-bottom: 0.75rem;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        /* Chatbot Styles */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .chat-header {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .chat-body {
+            height: 350px;
+            background-color: white;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            background-color: #f1f1f1;
+            padding: 10px;
+        }
+        
+        .chat-input {
+            flex-grow: 1;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 15px;
+            outline: none;
+        }
+        
+        .chat-send {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+        }
+        
+        .chat-message {
+            max-width: 80%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            background-color: #e1f5fe;
+            color: #333;
+            align-self: flex-end;
+        }
+        
+        .bot-message {
+            background-color: #f1f1f1;
+            color: #333;
+            align-self: flex-start;
+        }
+        
+        .chat-hidden {
+            display: none;
+        }
+        
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .chat-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        
+        .chat-loading-dots {
+            display: flex;
+        }
+        
+        .chat-loading-dots span {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #ccc;
+            border-radius: 50%;
+            animation: loadingDots 1.4s infinite ease-in-out both;
+        }
+        
+        .chat-loading-dots span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .chat-loading-dots span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes loadingDots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: #2ecc71;
+        }
+        
+        .status-loading {
+            background-color: #f39c12;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Tech Solutions Inc.</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="home">
+            <h1>Welcome to Tech Solutions Inc.</h1>
+            <p>We provide cutting-edge technology solutions to transform your business. With over 10 years of experience in the industry, we've helped hundreds of companies achieve their digital transformation goals.</p>
+            <p>Our team of experts is dedicated to delivering high-quality services tailored to your specific needs.</p>
+        </section>
+        
+        <section id="services">
+            <h2>Our Services</h2>
+            <p>We offer a wide range of services to help your business thrive in the digital landscape.</p>
+            
+            <div class="services">
+                <div class="service-card">
+                    <h3>Web Development</h3>
+                    <p>We create responsive, user-friendly websites that drive engagement and conversions. Our websites are optimized for performance and SEO to help your business stand out online.</p>
+                    <p>Technologies we use: HTML5, CSS3, JavaScript, React, Node.js, PHP, WordPress, and more.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Mobile App Development</h3>
+                    <p>From concept to launch, we develop innovative mobile applications for iOS and Android platforms. Our apps are designed with the user experience in mind, ensuring high user retention.</p>
+                    <p>We specialize in React Native and Flutter for cross-platform development, as well as native Swift and Kotlin.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Cloud Solutions</h3>
+                    <p>Leverage the power of cloud computing with our comprehensive cloud services. We help you migrate, manage, and optimize your infrastructure in the cloud.</p>
+                    <p>We work with AWS, Google Cloud, Azure, and other leading cloud platforms to provide scalable and secure solutions.</p>
+                </div>
+                
+                <div class="service-card">
+                    <h3>Data Analytics</h3>
+                    <p>Turn your data into actionable insights with our advanced analytics services. We help you collect, process, and visualize data to make informed business decisions.</p>
+                    <p>Our data analytics stack includes Python, R, Tableau, Power BI, and machine learning technologies.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about">
+            <h2>About Us</h2>
+            <p>Founded in 2013, Tech Solutions Inc. has grown from a small startup to a leading technology company serving clients worldwide. Our mission is to empower businesses through innovative technology solutions.</p>
+            <p>We believe in building long-term relationships with our clients by providing exceptional service and support. Our team of 50+ professionals includes experienced developers, designers, data scientists, and project managers committed to delivering excellence.</p>
+            <p>What sets us apart is our customer-centric approach and commitment to staying at the forefront of technological advancements. We continuously invest in research and development to bring the latest innovations to our clients.</p>
+        </section>
+        
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>Ready to take your business to the next level? Get in touch with us today!</p>
+            <p>Email: info@techsolutions.example</p>
+            <p>Phone: +91 9620854129</p>
+            <p>Address: Hi-Tech City, Innovation City, TX 75001</p>
+            <p>Office Hours: Monday-Friday,<br> 9:00 AM - 5:00 PM CST</p>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Tech Solutions Inc. All rights reserved.</p>
+    </footer>
+    
+    <!-- Chatbot -->
+    <button class="chat-button" id="chatButton">💬</button>
+    
+    <div class="chat-container chat-hidden" id="chatContainer">
+        <div class="chat-header" id="chatHeader">
+            <div>
+                <span class="status-indicator status-active" id="statusIndicator"></span>
+                <span>Tech Solutions Assistant</span>
+            </div>
+            <span id="chatClose">×</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-message bot-message">
+                Hello! I'm the Tech Solutions virtual assistant. I can answer questions about our company and services by analyzing the content on this website. How can I help you today?
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your question here...">
+            <button class="chat-send" id="chatSend">➤</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Chatbot UI Elements
+            const chatButton = document.getElementById("chatButton");
+            const chatContainer = document.getElementById("chatContainer");
+            const chatClose = document.getElementById("chatClose");
+            const chatBody = document.getElementById("chatBody");
+            const chatInput = document.getElementById("chatInput");
+            const chatSend = document.getElementById("chatSend");
+            const statusIndicator = document.getElementById("statusIndicator");
+            
+            // Website content storage
+            let websiteContent = {
+                sections: {},
+                keywords: {},
+                initialized: false
+            };
+            
+            // Initialize the chatbot
+            function initChatbot() {
+                if (!websiteContent.initialized) {
+                    parseWebsiteContent();
+                    websiteContent.initialized = true;
+                }
+            }
+            
+            // Parse website content on load
+            function parseWebsiteContent() {
+                // Get all sections
+                const sections = document.querySelectorAll("section");
+                
+                sections.forEach(section => {
+                    const id = section.id;
+                    const heading = section.querySelector("h1, h2")?.textContent || "";
+                    const paragraphs = Array.from(section.querySelectorAll("p")).map(p => p.textContent);
+                    const cards = Array.from(section.querySelectorAll(".service-card")).map(card => {
+                        return {
+                            title: card.querySelector("h3")?.textContent || "",
+                            content: Array.from(card.querySelectorAll("p")).map(p => p.textContent).join(" ")
+                        };
+                    });
+                    
+                    // Store section content
+                    websiteContent.sections[id] = {
+                        heading,
+                        paragraphs,
+                        cards
+                    };
+                    
+                    // Create keyword index
+                    const sectionText = heading + " " + paragraphs.join(" ") + " " + 
+                                      cards.map(card => card.title + " " + card.content).join(" ");
+                    
+                    // Extract keywords
+                    const words = sectionText.toLowerCase()
+                        .replace(/[^\w\s]/g, '')
+                        .split(/\s+/)
+                        .filter(word => word.length > 3); // Filter out short words
+                    
+                    // Add to keyword index
+                    words.forEach(word => {
+                        if (!websiteContent.keywords[word]) {
+                            websiteContent.keywords[word] = [];
+                        }
+                        if (!websiteContent.keywords[word].includes(id)) {
+                            websiteContent.keywords[word].push(id);
+                        }
+                    });
+                });
+                
+                console.log("Website content parsed:", websiteContent);
+            }
+            
+            // Toggle chat visibility
+            chatButton.addEventListener("click", function() {
+                chatButton.style.display = "none";
+                chatContainer.classList.remove("chat-hidden");
+                initChatbot();
+            });
+            
+            chatClose.addEventListener("click", function() {
+                chatContainer.classList.add("chat-hidden");
+                chatButton.style.display = "flex";
+            });
+            
+            // Send message on button click or Enter key
+            chatSend.addEventListener("click", sendMessage);
+            chatInput.addEventListener("keypress", function(e) {
+                if (e.key === "Enter") {
+                    sendMessage();
+                }
+            });
+            
+            // Send user message and get bot response
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message === "") return;
+                
+                // Add user message to chat
+                addMessage(message, "user");
+                
+                // Show loading indicator
+                statusIndicator.classList.remove("status-active");
+                statusIndicator.classList.add("status-loading");
+                
+                // Add loading animation
+                const loadingElement = document.createElement("div");
+                loadingElement.classList.add("chat-message", "bot-message", "chat-loading");
+                const dotsContainer = document.createElement("div");
+                dotsContainer.classList.add("chat-loading-dots");
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement("span");
+                    dotsContainer.appendChild(dot);
+                }
+                loadingElement.appendChild(dotsContainer);
+                chatBody.appendChild(loadingElement);
+                chatBody.scrollTop = chatBody.scrollHeight;
+                
+                // Process and respond with small delay to simulate analysis
+                setTimeout(() => {
+                    // Remove loading indicator
+                    chatBody.removeChild(loadingElement);
+                    
+                    // Process the question and generate response
+                    const response = processQuestion(message);
+                    addMessage(response, "bot");
+                    
+                    // Reset status indicator
+                    statusIndicator.classList.remove("status-loading");
+                    statusIndicator.classList.add("status-active");
+                }, 1000);
+                
+                // Clear input
+                chatInput.value = "";
+            }
+            
+            // Add message to the chat UI
+            function addMessage(message, sender) {
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("chat-message");
+                messageElement.classList.add(sender === "user" ? "user-message" : "bot-message");
+                messageElement.textContent = message;
+                
+                chatBody.appendChild(messageElement);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+            
+            // Process question and find relevant information
+            function processQuestion(question) {
+                // Convert question to lowercase
+                const lowerQuestion = question.toLowerCase();
+                
+                // Check for greetings or general inquiries
+                if (/^(hi|hello|hey|greetings)/.test(lowerQuestion)) {
+                    return "Hello! How can I help you today? Feel free to ask about our services, company information, or anything else about Tech Solutions Inc.";
+                }
+                
+                // Extract words from the question
+                const words = lowerQuestion
+                    .replace(/[^\w\s]/g, '')
+                    .split(/\s+/)
+                    .filter(word => word.length > 3);
+                
+                // Find relevant sections based on keywords
+                const relevantSections = {};
+                words.forEach(word => {
+                    if (websiteContent.keywords[word]) {
+                        websiteContent.keywords[word].forEach(sectionId => {
+                            if (!relevantSections[sectionId]) {
+                                relevantSections[sectionId] = 0;
+                            }
+                            relevantSections[sectionId]++;
+                        });
+                    }
+                });
+                
+                // Sort sections by relevance
+                const sortedSections = Object.keys(relevantSections)
+                    .sort((a, b) => relevantSections[b] - relevantSections[a]);
+                
+                // If no relevant sections found
+                if (sortedSections.length === 0) {
+                    return "I'm not sure I understand your question. Could you please ask something related to our services, company information, or contact details?";
+                }
+                
+                // Build response from the most relevant section
+                let response = "";
+                const topSection = sortedSections[0];
+                const sectionData = websiteContent.sections[topSection];
+                
+                // Determine specific topic within the section
+                if (topSection === "services") {
+                    // Check which service they're asking about
+                    const serviceKeywords = {
+                        "web": 0,
+                        "website": 0,
+                        "mobile": 1,
+                        "app": 1,
+                        "cloud": 2,
+                        "data": 3,
+                        "analytics": 3
+                    };
+                    
+                    // Determine which service they're asking about
+                    let serviceIndex = -1;
+                    Object.keys(serviceKeywords).forEach(keyword => {
+                        if (lowerQuestion.includes(keyword)) {
+                            serviceIndex = serviceKeywords[keyword];
+                        }
+                    });
+                    
+                    if (serviceIndex !== -1 && sectionData.cards[serviceIndex]) {
+                        // Specific service response
+                        const card = sectionData.cards[serviceIndex];
+                        response = `${card.title}: ${card.content}`;
+                    } else {
+                        // General services response
+                        response = `${sectionData.heading}. ${sectionData.paragraphs[0]} We offer services in `;
+                        response += sectionData.cards.map(card => card.title).join(", ") + ".";
+                    }
+                } else if (topSection === "contact") {
+                    // Specific contact info they might be asking for
+                    if (lowerQuestion.includes("email")) {
+                        response = `Our email address is ${sectionData.paragraphs[1].trim()}`;
+                    } else if (lowerQuestion.includes("phone") || lowerQuestion.includes("call")) {
+                        response = `You can reach us by phone at ${sectionData.paragraphs[2].trim()}`;
+                    } else if (lowerQuestion.includes("address") || lowerQuestion.includes("location") || lowerQuestion.includes("office")) {
+                        response = `Our office is located at ${sectionData.paragraphs[3].trim()}`;
+                    } else if (lowerQuestion.includes("hours") || lowerQuestion.includes("time")) {
+                        response = `Our office hours are ${sectionData.paragraphs[4].trim()}`;
+                    } else {
+                        // General contact response
+                        response = sectionData.paragraphs.join(" ");
+                    }
+                } else {
+                    // General section response
+                    response = `${sectionData.heading}. ${sectionData.paragraphs.join(" ")}`;
+                }
+                
+                // Attempt to make responses more natural
+                if (lowerQuestion.includes("who") && lowerQuestion.includes("you")) {
+                    if (topSection === "about") {
+                        response = `We are Tech Solutions Inc. ${sectionData.paragraphs[0]}`;
+                    }
+                }
+                
+                // Ensure response doesn't get too long
+                if (response.length > 300) {
+                    // Truncate to closest sentence end
+                    const truncated = response.substring(0, 300);
+                    const lastPeriod = truncated.lastIndexOf(".");
+                    if (lastPeriod > 150) {
+                        response = truncated.substring(0, lastPeriod + 1);
+                    }
+                }
+                
+                return response;
+            }
+        });
+    </script>
+</body>
+</html>
